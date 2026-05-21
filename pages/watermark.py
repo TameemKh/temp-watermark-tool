@@ -62,22 +62,22 @@ with controls_col:
 # =========================
 
 if watermark_type == "نص":
-
-    opacity = st.slider(
-        "شفافية النص",
-        min_value=0.01,
-        max_value=0.50,
-        value=0.10
-    )
+    with controls_col:
+        opacity = st.slider(
+            "شفافية النص",
+            min_value=0.01,
+            max_value=0.50,
+            value=0.10
+        )
 
 else:
-
-    opacity = st.slider(
-        "شفافية الشعار",
-        min_value=0.01,
-        max_value=1.00,
-        value=0.10
-    )
+    with controls_col:
+        opacity = st.slider(
+            "شفافية الشعار",
+            min_value=0.01,
+            max_value=1.00,
+            value=0.10
+        )
 
 # =========================
 # HELPERS
