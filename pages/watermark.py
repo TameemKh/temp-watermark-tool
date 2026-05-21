@@ -276,16 +276,34 @@ if uploaded_pdfs:
 
         preview_bytes = preview_file.getvalue()
 
+        # =========================
+        # OPEN DOCUMENT
+        # =========================
+
         preview_doc = fitz.open(
             stream=preview_bytes,
             filetype="pdf"
         )
 
-        image_bytes = None
+        total_pages = len(preview_doc)
+
+        # =========================
+        # PAGE SELECTOR
+        # =========================
+
+        preview_page_number = st.number_input(
+            "رقم الصفحة",
+            min_value=1,
+            max_value=total_pages,
+            value=1,
+            step=1
+        )
 
         # =========================
         # LOAD LOGO
         # =========================
+
+        image_bytes = None
 
         if watermark_type == "شعار":
 
@@ -296,66 +314,54 @@ if uploaded_pdfs:
                 image_bytes = f.read()
 
         # =========================
-        # APPLY WATERMARK TO ALL PAGES
+        # APPLY WATERMARK TO ONE PAGE ONLY
         # =========================
 
-        for page in preview_doc:
+        preview_page = preview_doc[
+            preview_page_number - 1
+        ]
 
-            insert_watermark(
-                page,
-                watermark_type,
-                watermark_text,
-                opacity,
-                mode,
-                image_bytes
-            )
-
-        # =========================
-        # SAVE PREVIEW PDF
-        # =========================
-
-        preview_buffer = io.BytesIO()
-
-        preview_doc.save(preview_buffer)
-
-        preview_buffer.seek(0)
-
-        preview_doc.close()
-
-        # =========================
-        # PREVIEW SETTINGS
-        # =========================
-
-        preview_page_number = st.number_input(
-            "رقم الصفحة",
-            min_value=1,
-            max_value=len(preview_doc),
-            value=1,
-            step=1
+        insert_watermark(
+            preview_page,
+            watermark_type,
+            watermark_text,
+            opacity,
+            mode,
+            image_bytes
         )
 
         # =========================
-        # PDF VIEWER
+        # CONVERT PAGE TO IMAGE
         # =========================
 
+        pix = preview_page.get_pixmap(
+            matrix=fitz.Matrix(1.5, 1.5)
+        )
+
+        img = Image.frombytes(
+            "RGB",
+            [pix.width, pix.height],
+            pix.samples
+        )
+
         # =========================
-        # PDF VIEWER CONTAINER
+        # SCROLLABLE CONTAINER
         # =========================
 
         st.markdown("""
         <style>
 
-        .pdf-container {
+        .preview-container {
 
             height: 900px;
 
-            overflow-y: scroll;
+            overflow-y: auto;
 
             border: 1px solid #444;
 
             border-radius: 14px;
 
-            padding: 10px;
+            padding: 15px;
 
             background-color: rgba(255,255,255,0.02);
         }
@@ -363,15 +369,23 @@ if uploaded_pdfs:
         </style>
         """, unsafe_allow_html=True)
 
-        st.markdown('<div class="pdf-container">', unsafe_allow_html=True)
-
-        pdf_viewer(
-            input=preview_buffer.getvalue(),
-            width=700,
-            pages_to_render=[preview_page_number]
+        st.markdown(
+            '<div class="preview-container">',
+            unsafe_allow_html=True
         )
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.image(
+            img,
+            caption=f"معاينة الصفحة {preview_page_number}",
+            use_container_width=True
+        )
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        preview_doc.close()
 
     except Exception as e:
 
