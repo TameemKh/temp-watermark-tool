@@ -400,14 +400,16 @@ if uploaded_pdfs:
         # APPLY WATERMARK
         # =========================
 
-        insert_watermark(
-            preview_page,
-            watermark_type,
-            watermark_text,
-            opacity,
-            mode,
-            image_bytes
-        )
+        if preview_page_number not in excluded_pages:
+
+            insert_watermark(
+                preview_page,
+                watermark_type,
+                watermark_text,
+                opacity,
+                mode,
+                image_bytes
+            )
 
         # =========================
         # CONVERT TO IMAGE
