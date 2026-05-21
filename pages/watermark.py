@@ -276,10 +276,6 @@ if uploaded_pdfs:
 
         preview_bytes = preview_file.getvalue()
 
-        # =========================
-        # OPEN DOCUMENT
-        # =========================
-
         preview_doc = fitz.open(
             stream=preview_bytes,
             filetype="pdf"
@@ -300,10 +296,18 @@ if uploaded_pdfs:
         )
 
         # =========================
-        # LOAD LOGO
+        # GET PAGE
         # =========================
 
+        preview_page = preview_doc[
+            preview_page_number - 1
+        ]
+
         image_bytes = None
+
+        # =========================
+        # LOAD LOGO
+        # =========================
 
         if watermark_type == "شعار":
 
@@ -314,12 +318,8 @@ if uploaded_pdfs:
                 image_bytes = f.read()
 
         # =========================
-        # APPLY WATERMARK TO ONE PAGE ONLY
+        # APPLY WATERMARK
         # =========================
-
-        preview_page = preview_doc[
-            preview_page_number - 1
-        ]
 
         insert_watermark(
             preview_page,
@@ -331,7 +331,7 @@ if uploaded_pdfs:
         )
 
         # =========================
-        # CONVERT PAGE TO IMAGE
+        # CONVERT TO IMAGE
         # =========================
 
         pix = preview_page.get_pixmap(
@@ -345,44 +345,13 @@ if uploaded_pdfs:
         )
 
         # =========================
-        # SCROLLABLE CONTAINER
+        # SHOW IMAGE
         # =========================
-
-        st.markdown("""
-        <style>
-
-        .preview-container {
-
-            height: 900px;
-
-            overflow-y: auto;
-
-            border: 1px solid #444;
-
-            border-radius: 14px;
-
-            padding: 15px;
-
-            background-color: rgba(255,255,255,0.02);
-        }
-
-        </style>
-        """, unsafe_allow_html=True)
-
-        st.markdown(
-            '<div class="preview-container">',
-            unsafe_allow_html=True
-        )
 
         st.image(
             img,
             caption=f"معاينة الصفحة {preview_page_number}",
             use_container_width=True
-        )
-
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
         )
 
         preview_doc.close()
