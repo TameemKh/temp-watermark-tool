@@ -261,6 +261,76 @@ def insert_watermark(
             )
 
 # =========================
+# PARSE EXCLUDED PAGES
+# =========================
+
+def parse_excluded_pages(text):
+
+    excluded = set()
+
+    lines = text.splitlines()
+
+    for line in lines:
+
+        line = line.strip()
+
+        if not line:
+            continue
+
+        # =========================
+        # RANGE
+        # =========================
+
+        if "-" in line:
+
+            try:
+
+                start, end = line.split("-")
+
+                start = int(start.strip())
+                end = int(end.strip())
+
+                for page in range(start, end + 1):
+
+                    excluded.add(page)
+
+            except:
+                pass
+
+        # =========================
+        # SINGLE PAGE
+        # =========================
+
+        else:
+
+            try:
+
+                excluded.add(int(line))
+
+            except:
+                pass
+
+    return excluded
+
+# =========================
+# EXCLUDED PAGES
+# =========================
+
+exclude_input = st.text_area(
+    "الصفحات المستثناة",
+    placeholder=
+    "مثال:\n"
+    "2\n"
+    "5-8\n"
+    "11\n"
+    "15-20"
+)
+
+excluded_pages = parse_excluded_pages(
+    exclude_input
+)
+
+# =========================
 # LIVE PREVIEW
 # =========================
 
@@ -418,7 +488,10 @@ if st.button("إنشاء وتحميل"):
             # APPLY WATERMARK
             # =========================
 
-            for page in doc:
+            for page_index, page in enumerate(doc, start=1):
+
+                if page_index in excluded_pages:
+                    continue
 
                 insert_watermark(
                     page,
