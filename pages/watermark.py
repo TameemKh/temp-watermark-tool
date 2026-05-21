@@ -323,13 +323,55 @@ if uploaded_pdfs:
         preview_doc.close()
 
         # =========================
+        # PREVIEW SETTINGS
+        # =========================
+
+        preview_page_number = st.number_input(
+            "رقم الصفحة",
+            min_value=1,
+            max_value=len(preview_doc),
+            value=1,
+            step=1
+        )
+
+        # =========================
         # PDF VIEWER
         # =========================
 
+        # =========================
+        # PDF VIEWER CONTAINER
+        # =========================
+
+        st.markdown("""
+        <style>
+
+        .pdf-container {
+
+            height: 900px;
+
+            overflow-y: scroll;
+
+            border: 1px solid #444;
+
+            border-radius: 14px;
+
+            padding: 10px;
+
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.markdown('<div class="pdf-container">', unsafe_allow_html=True)
+
         pdf_viewer(
             input=preview_buffer.getvalue(),
-            width=700
+            width=700,
+            pages_to_render=[preview_page_number]
         )
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
     except Exception as e:
 
