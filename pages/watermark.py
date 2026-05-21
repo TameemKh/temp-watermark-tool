@@ -287,11 +287,20 @@ if uploaded_pdfs:
         # PAGE SELECTOR
         # =========================
 
-        preview_page_number = st.number_input(
-            "رقم الصفحة",
+        st.markdown("### اختيار الصفحة")
+
+        preview_page_number = st.slider(
+            "التنقل السريع",
             min_value=1,
             max_value=total_pages,
-            value=1,
+            value=1
+        )
+
+        preview_page_number = st.number_input(
+            "أو اكتب رقم الصفحة",
+            min_value=1,
+            max_value=total_pages,
+            value=preview_page_number,
             step=1
         )
 
