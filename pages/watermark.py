@@ -4,6 +4,7 @@ import math
 import io
 import base64
 from PIL import Image
+from streamlit_pdf_viewer import pdf_viewer
 
 # =========================
 # PAGE CONFIG
@@ -280,8 +281,6 @@ if uploaded_pdfs:
             filetype="pdf"
         )
 
-        preview_page = preview_doc[0]
-
         image_bytes = None
 
         # =========================
@@ -297,43 +296,40 @@ if uploaded_pdfs:
                 image_bytes = f.read()
 
         # =========================
-        # APPLY WATERMARK
+        # APPLY WATERMARK TO ALL PAGES
         # =========================
 
-        insert_watermark(
-            preview_page,
-            watermark_type,
-            watermark_text,
-            opacity,
-            mode,
-            image_bytes
-        )
+        for page in preview_doc:
+
+            insert_watermark(
+                page,
+                watermark_type,
+                watermark_text,
+                opacity,
+                mode,
+                image_bytes
+            )
 
         # =========================
-        # CONVERT TO IMAGE
+        # SAVE PREVIEW PDF
         # =========================
 
-        pix = preview_page.get_pixmap(
-            matrix=fitz.Matrix(1.5, 1.5)
-        )
+        preview_buffer = io.BytesIO()
 
-        img = Image.frombytes(
-            "RGB",
-            [pix.width, pix.height],
-            pix.samples
-        )
+        preview_doc.save(preview_buffer)
 
-        # =========================
-        # SHOW IMAGE
-        # =========================
-
-        st.image(
-            img,
-            caption="معاينة مباشرة لأول صفحة",
-            use_container_width=True
-        )
+        preview_buffer.seek(0)
 
         preview_doc.close()
+
+        # =========================
+        # PDF VIEWER
+        # =========================
+
+        pdf_viewer(
+            input=preview_buffer.getvalue(),
+            width=700
+        )
 
     except Exception as e:
 
