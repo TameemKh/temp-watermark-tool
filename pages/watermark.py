@@ -29,7 +29,7 @@ controls_col, preview_col = st.columns(
 # =========================
 # UI
 # =========================
-with preview_col:
+with controls_col:
 
     uploaded_pdfs = st.file_uploader(
         "رفع ملفات PDF",
@@ -37,7 +37,7 @@ with preview_col:
         accept_multiple_files=True
     )
 
-with preview_col:
+with controls_col:
 
     watermark_type = st.selectbox(
         "نوع العلامة المائية",
@@ -46,8 +46,8 @@ with preview_col:
 
 watermark_text = "IVR TEAM"
 
-with preview_col:
-    
+with controls_col:
+
     mode = st.selectbox(
         "الوضعية",
         [
@@ -99,7 +99,7 @@ def calculate_font_size(width, height):
 # =========================
 # GET LOGO PATH
 # =========================
-with preview_col:
+with controls_col:
     def get_logo_path(opacity):
 
         percentage = int(opacity * 100)
@@ -115,7 +115,7 @@ with preview_col:
 # =========================
 # WATERMARK FUNCTION
 # =========================
-with preview_col:
+with controls_col:
     def insert_watermark(
         page,
         wm_type,
@@ -277,7 +277,7 @@ with preview_col:
     # PARSE EXCLUDED PAGES
     # =========================
 
-with preview_col:
+with controls_col:
 
     def parse_excluded_pages(text):
 
@@ -330,7 +330,7 @@ with preview_col:
 # =========================
 # EXCLUDED PAGES
 # =========================
-with preview_col:
+with controls_col:
 
     exclude_input = st.text_area(
         "الصفحات المستثناة",
@@ -342,7 +342,7 @@ with preview_col:
         "15-20"
     )
 
-with preview_col:
+with controls_col:
     excluded_pages = parse_excluded_pages(
         exclude_input
     )
