@@ -376,17 +376,17 @@ with preview_col:
             # PAGE SELECTOR
             # =========================
             with controls_col:
-                st.markdown("### اختيار الصفحة")
+                st.markdown("### اختر الصفحة التي تريد عرضها")
 
                 preview_page_number = st.slider(
-                    "التنقل السريع",
+                    " التنقل السريع بين الصفحات",
                     min_value=1,
                     max_value=total_pages,
                     value=1
                 )
             with controls_col:
                 preview_page_number = st.number_input(
-                    "أو اكتب رقم الصفحة",
+                    "أو اكتب رقم الصفحة التي تريد عرضها",
                     min_value=1,
                     max_value=total_pages,
                     value=preview_page_number,
