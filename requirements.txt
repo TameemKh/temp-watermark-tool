@@ -1,4 +1,0 @@
-streamlit
-PyMuPDF
-pillow
-streamlit-pdf-viewer
